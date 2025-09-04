@@ -337,7 +337,9 @@ const SellerDashboard: React.FC = () => {
                           className="w-full h-full object-cover rounded-lg"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.src = 'https://via.placeholder.com/64x64/cccccc/666666?text=Property';
+                            if (target.src !== 'https://via.placeholder.com/64x64/cccccc/666666?text=Property') {
+                              target.src = 'https://via.placeholder.com/64x64/cccccc/666666?text=Property';
+                            }
                           }}
                         />
                       </div>

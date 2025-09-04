@@ -157,31 +157,31 @@ const PropertyListing: React.FC = () => {
 
       // 2) Load dummy properties from local sample and take 8–9
       let dummyList: Property[] = [];
-      try {
-        const res = await fetch('/properties.sample.json');
-        if (res.ok) {
-          const allDummy: Property[] = await res.json();
-          dummyList = allDummy.slice(0, 9); // keep 8-9 dummy items
-        }
-      } catch {}
+      // try {
+      //   const res = await fetch('/properties.sample.json');
+      //   if (res.ok) {
+      //     const allDummy: Property[] = await res.json();
+      //     dummyList = allDummy.slice(0, 9); // keep 8-9 dummy items
+      //   }
+      // } catch {}
 
-      const combined = [...latestSeller, ...dummyList];
+      const combined = [...latestSeller];
 
       setAllProperties(combined);
       setError("");
       // Initial compute
       applyClientFiltersAndPaginate(combined);
     } catch (error) {
-      try {
-        const res = await fetch('/properties.sample.json');
-        if (res.ok) {
-          const sample: Property[] = (await res.json()).slice(0, 9);
-          setAllProperties(sample);
-          setError("");
-          applyClientFiltersAndPaginate(sample);
-          return;
-        }
-      } catch { }
+      // try {
+      //   const res = await fetch('/properties.sample.json');
+      //   if (res.ok) {
+      //     const sample: Property[] = (await res.json()).slice(0, 9);
+      //     setAllProperties(sample);
+      //     setError("");
+      //     applyClientFiltersAndPaginate(sample);
+      //     return;
+      //   }
+      // } catch { }
       const errorMessage = error instanceof Error ? error.message : "Failed to fetch properties";
       setError(errorMessage);
       setAllProperties([]);

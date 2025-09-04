@@ -273,8 +273,8 @@ class ApiClient {
     const queryString = queryParams.toString();
 
     const tryEndpoints = [
-      queryString ? `/api/properties?${queryString}` : '/api/properties',
-      queryString ? `/api/listings?${queryString}` : '/api/listings',
+      queryString ? `/api/properties?${queryString}` : '/properties',
+      queryString ? `/api/listings?${queryString}` : '/listings',
     ];
 
     for (const endpoint of tryEndpoints) {
@@ -334,7 +334,7 @@ class ApiClient {
   }
 
   async getProperty(id: string | number): Promise<ApiResponse<Property>> {
-  const endpoints = [`/api/properties/${id}`, `/api/listings/${id}`];
+  const endpoints = [`/properties/${id}`, `/listings/${id}`];
     for (const endpoint of endpoints) {
       try {
         const response = await this.request<any>(endpoint);
@@ -350,7 +350,7 @@ class ApiClient {
   async createProperty(propertyData: PropertyData | FormData): Promise<ApiResponse> {
     // Handle both JSON and FormData (for file uploads)
     if (propertyData instanceof FormData) {
-  const endpoints = [`${this.baseURL}/api/properties`, `${this.baseURL}/api/listings`];
+  const endpoints = [`${this.baseURL}/properties`, `${this.baseURL}/listings`];
       for (const url of endpoints) {
         const config = {
           method: 'POST',
@@ -368,7 +368,7 @@ class ApiClient {
       return { success: false, error: 'Property creation failed' } as unknown as ApiResponse;
     } else {
       // JSON payload version
-  const endpoints = ['/api/properties', '/api/listings'];
+  const endpoints = ['/properties', '/listings'];
       for (const endpoint of endpoints) {
         try {
           const res = await this.request(endpoint, {
@@ -384,7 +384,7 @@ class ApiClient {
 
   async getUserProperties(): Promise<ApiResponse<Property[]>> {
     // Use listings endpoint first; '/properties/my' is not supported on this backend
-  const endpoints = ['/api/listings/my-listings'];
+  const endpoints = ['/listings/my-listings'];
     for (const endpoint of endpoints) {
       try {
         const raw = await this.request<any>(endpoint);
@@ -402,13 +402,13 @@ class ApiClient {
   async updateProperty(id: string | number, propertyData: Partial<PropertyData>): Promise<ApiResponse> {
     // Prefer listings endpoint; fall back to properties
     try {
-  const res = await this.request(`/api/listings/${id}`, {
+  const res = await this.request(`/listings/${id}`, {
         method: 'PUT',
         body: JSON.stringify(propertyData),
       });
       return res;
     } catch {}
-  return this.request(`/api/properties/${id}`, {
+  return this.request(`/properties/${id}`, {
       method: 'PUT',
       body: JSON.stringify(propertyData),
     });
@@ -421,11 +421,11 @@ class ApiClient {
   }
 
   async getFeaturedProperties(): Promise<ApiResponse> {
-  return this.request('/api/properties/featured');
+  return this.request('/properties/featured');
   }
 
   async addReview(propertyId: string | number, reviewData: ReviewData): Promise<ApiResponse> {
-  return this.request(`/api/properties/${propertyId}/reviews`, {
+  return this.request(`/properties/${propertyId}/reviews`, {
       method: 'POST',
       body: JSON.stringify(reviewData),
     });
@@ -433,11 +433,11 @@ class ApiClient {
 
   // User methods
   async getUserProfile(): Promise<ApiResponse> {
-  return this.request('/api/users/profile');
+  return this.request('/users/profile');
   }
 
   async updateUserProfile(profileData: Partial<UserData>): Promise<ApiResponse> {
-  return this.request('/api/users/profile', {
+  return this.request('/users/profile', {
       method: 'PUT',
       body: JSON.stringify(profileData),
     });
@@ -447,7 +447,7 @@ class ApiClient {
   async getFavorites(): Promise<ApiResponse<Property[]>> {
     // Merge server favorites with local favorites (non-ObjectId demo items)
     let server: Property[] = [];
-  const endpoints = ['/api/favorites']; // primary backend route
+  const endpoints = ['/favorites']; // primary backend route
     for (const endpoint of endpoints) {
       try {
         const raw = await this.request<any>(endpoint);
@@ -481,7 +481,7 @@ class ApiClient {
       }
       return { success: true, message: 'Favorited locally' } as ApiResponse;
     }
-  const endpoints = [`/api/favorites/${propertyId}`];
+  const endpoints = [`/favorites/${propertyId}`];
     for (const endpoint of endpoints) {
       try {
         const res = await this.request(endpoint, { method: 'POST' });
@@ -498,7 +498,7 @@ class ApiClient {
       this.writeLocalFavorites(items);
       return { success: true, message: 'Unfavorited locally' } as ApiResponse;
     }
-  const endpoints = [`/api/favorites/${propertyId}`];
+  const endpoints = [`/favorites/${propertyId}`];
     for (const endpoint of endpoints) {
       try {
         const res = await this.request(endpoint, { method: 'DELETE' });
@@ -509,19 +509,19 @@ class ApiClient {
   }
 
   // Contact methods
-  async submitContact(contactData: ContactData): Promise<ApiResponse> {
-  return this.request('/api/contact', {
-      method: 'POST',
-      body: JSON.stringify(contactData),
-    });
-  }
+  // async submitContact(contactData: ContactData): Promise<ApiResponse> {
+  // return this.request('/contact', {
+  //     method: 'POST',
+  //     body: JSON.stringify(contactData),
+  //   });
+  // }
 
   // File upload helper
   async uploadFile(file: File): Promise<{ url: string }> {
     const formData = new FormData();
     formData.append('image', file);
 
-  const url = `${this.baseURL}/api/upload`;
+  const url = `${this.baseURL}/upload`;
     const config = {
       method: 'POST',
       headers: {
@@ -547,7 +547,7 @@ class ApiClient {
 
   // Health check
   async healthCheck(): Promise<ApiResponse> {
-  return this.request('/api/health');
+  return this.request('/health');
   }
 }
 

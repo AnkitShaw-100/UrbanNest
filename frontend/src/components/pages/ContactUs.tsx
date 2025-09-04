@@ -54,14 +54,12 @@ const ContactUs: React.FC = () => {
     setSubmitStatus("idle");
 
     try {
-      const response = await apiClient.submitContact(formData);
-      if (response.success) {
-        setSubmitStatus("success");
-        setFormData({ name: "", email: "", phone: "", message: "" });
-        setErrors({});
-      } else {
-        setSubmitStatus("error");
-      }
+      // Simulate API call with setTimeout
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Simulate success response
+      setSubmitStatus("success");
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      setErrors({});
     } catch {
       setSubmitStatus("error");
     } finally {

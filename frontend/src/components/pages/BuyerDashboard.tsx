@@ -298,6 +298,8 @@ const BuyerDashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
+
+
                 <div className="relative h-48">
                   <img
                     src={property.image || property.images?.[0] || 'https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image'}
@@ -305,7 +307,9 @@ const BuyerDashboard = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = 'https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image';
+                      if (target.src !== 'https://via.placeholder.com/64x64/cccccc/666666?text=Property') {
+                        target.src = 'https://via.placeholder.com/64x64/cccccc/666666?text=Property';
+                      }
                     }}
                   />
                   <div className="absolute top-3 right-3">
