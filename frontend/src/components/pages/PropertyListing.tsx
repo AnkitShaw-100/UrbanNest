@@ -156,7 +156,7 @@ const PropertyListing: React.FC = () => {
       }
 
       // 2) Load dummy properties from local sample and take 8–9
-      let dummyList: Property[] = [];
+      // let dummyList: Property[] = [];
       // try {
       //   const res = await fetch('/properties.sample.json');
       //   if (res.ok) {

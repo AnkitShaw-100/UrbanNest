@@ -56,12 +56,6 @@ interface ReviewData {
   comment: string;
 }
 
-interface ContactData {
-  name: string;
-  email: string;
-  message: string;
-  phone?: string;
-}
 
 interface Property {
   _id: string;

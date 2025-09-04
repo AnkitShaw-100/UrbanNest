@@ -7,7 +7,6 @@ import {
   FaClock,
   FaPaperPlane,
 } from "react-icons/fa";
-import apiClient from "../../services/api.ts";
 
 interface ContactFormData {
   name: string;
