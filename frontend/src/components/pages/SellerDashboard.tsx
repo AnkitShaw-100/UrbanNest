@@ -104,6 +104,11 @@ const SellerDashboard: React.FC = () => {
   const handleViewProperty = (propertyId: string) => {
     navigate(`/property/${propertyId}`);
   };
+  
+  if(!user)
+  {
+    return;
+  }
 
   // if (!user || user.role !== 'seller') {
   //   return (
@@ -129,7 +134,7 @@ const SellerDashboard: React.FC = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold text-gray-800">Seller Dashboard</h1>
-                <p className="text-gray-600 mt-2">Welcome back, {user.name}</p>
+                <p className="text-gray-600 mt-2">Welcome back, {user?.name}</p>
               </div>
               <button
                 onClick={handleAddProperty}

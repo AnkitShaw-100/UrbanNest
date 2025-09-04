@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://r-s-kappa.vercel.app'
+const API_BASE_URL = 'https://real-estate-f6ma.vercel.app'
 
 // Type definitions
 interface ApiResponse<T = unknown> {
