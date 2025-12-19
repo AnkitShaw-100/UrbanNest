@@ -1,10 +1,23 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
+
+// Resolve upload directory (supports persistent disk on hosts)
+const UPLOAD_DIR = process.env.UPLOAD_DIR || "uploads";
+const ensureUploadDir = () => {
+  const dir = path.isAbsolute(UPLOAD_DIR)
+    ? UPLOAD_DIR
+    : path.join(process.cwd(), UPLOAD_DIR);
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch {}
+  return dir;
+};
 
 // Set storage engine
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, ensureUploadDir());
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));

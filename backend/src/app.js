@@ -38,8 +38,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Serve uploaded images statically
-app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
+// Serve uploaded images statically (supports absolute or relative `UPLOAD_DIR`)
+const projectRoot = path.join(__dirname, "..", "..");
+const uploadDirEnv = process.env.UPLOAD_DIR || "uploads";
+const uploadPath = path.isAbsolute(uploadDirEnv)
+  ? uploadDirEnv
+  : path.join(projectRoot, uploadDirEnv);
+app.use("/uploads", express.static(uploadPath));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes);
