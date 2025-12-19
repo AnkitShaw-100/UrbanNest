@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import mongoose from "mongoose";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import listingRoutes from "./routes/listing.routes.js";
@@ -90,6 +91,14 @@ app.use("/api/properties", propertyRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
+});
+
+// Health endpoint for frontend checks
+app.get("/api/health", (req, res) => {
+  const dbReadyStates = ["disconnected", "connected", "connecting", "disconnecting", "uninitialized"];
+  const stateIndex = mongoose.connection.readyState;
+  const dbState = dbReadyStates[stateIndex] || String(stateIndex);
+  res.json({ ok: true, db: dbState });
 });
 
 export default app;
