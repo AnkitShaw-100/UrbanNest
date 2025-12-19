@@ -158,7 +158,6 @@ const Navbar = () => {
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
                         onClick={() => setUserDropdown(false)}
                       >
-                        <HiCog className="w-4 h-4 mr-3 text-gray-500" />
                         Dashboard
                       </Link>
 
@@ -167,7 +166,6 @@ const Navbar = () => {
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
                         onClick={() => setUserDropdown(false)}
                       >
-                        <HiHeart className="w-4 h-4 mr-3 text-gray-500" />
                         Favorites
                       </Link>
 

@@ -78,82 +78,80 @@ const ContactUs: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="h-screen overflow-hidden bg-gradient-to-b from-blue-50 to-white py-8">
+      <div className="max-w-7xl mx-auto h-full flex flex-col px-6 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           {/* Header */}
-          <div className="text-center mb-14">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <div className="text-center mb-8">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
               Contact Us
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Have questions about our properties or services? We’d love to hear
               from you — let’s find your dream home together.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 items-start">
             {/* Contact Information */}
-            <div className="space-y-8">
-              <h2 className="text-2xl font-semibold text-gray-800">
+            <div className="space-y-4 max-w-xl lg:pr-8">
+              <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
                 Get in Touch
               </h2>
-              <p className="text-gray-600">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Reach out to us directly or fill out the form — we usually reply
                 within 24 hours.
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-4 mt-4">
                 {/* Email */}
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shadow">
-                    <FaEnvelope className="text-blue-600 text-lg" />
+                  <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0">
+                    <FaEnvelope className="text-blue-600 text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-800">Email</h3>
-                    <p className="text-gray-600">ankitshaw6933@gmail.com</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Email</h3>
+                    <p className="text-base text-gray-600">ankitTest@gmail.com</p>
                   </div>
                 </div>
 
                 {/* Phone */}
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center shadow">
-                    <FaPhone className="text-green-600 text-lg" />
+                  <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0">
+                    <FaPhone className="text-green-600 text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-800">Phone</h3>
-                    <p className="text-gray-600">+91 98765 43210</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Phone</h3>
+                    <p className="text-base text-gray-600">+91 77777 77770</p>
                   </div>
                 </div>
 
                 {/* Address */}
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center shadow">
-                    <FaMapMarkerAlt className="text-purple-600 text-lg" />
+                  <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0">
+                    <FaMapMarkerAlt className="text-purple-600 text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-800">Office</h3>
-                    <p className="text-gray-600">
-                      123 Real Estate Plaza, College More, Kolkata - 91
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Office</h3>
+                    <p className="text-base text-gray-600">
+                      123 Dummy Address, Kolkata - 700091
                     </p>
                   </div>
                 </div>
 
                 {/* Hours */}
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center shadow">
-                    <FaClock className="text-orange-600 text-lg" />
+                  <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0">
+                    <FaClock className="text-orange-600 text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-800">Hours</h3>
-                    <p className="text-gray-600">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Office Hours</h3>
+                    <p className="text-base text-gray-600 leading-relaxed">
                       Mon - Fri: 9:00 AM - 6:00 PM
-                      <br />
-                      Sat: 10:00 AM - 4:00 PM
                     </p>
                   </div>
                 </div>
@@ -161,25 +159,25 @@ const ContactUs: React.FC = () => {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-10 border border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            <div className="bg-white rounded-2xl shadow-xl p-5 lg:p-6 border border-gray-100 mx-auto" style={{ width: "75%" }}>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">
                 Send Us a Message
               </h2>
 
               {/* Status Messages */}
               {submitStatus === "success" && (
                 <div className="mb-6 p-4 bg-green-50 border border-green-400 text-green-700 rounded-lg">
-                  ✅ Thank you for your message! We’ll get back to you soon.
+                  Thank you for your message! We’ll get back to you soon.
                 </div>
               )}
               {submitStatus === "error" && (
                 <div className="mb-6 p-4 bg-red-50 border border-red-400 text-red-700 rounded-lg">
-                  ❌ Oops! Something went wrong. Please try again.
+                  Oops! Something went wrong. Please try again.
                 </div>
               )}
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name */}
                 <div>
                   <label
@@ -194,7 +192,7 @@ const ContactUs: React.FC = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+                    className={`w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                       errors.name ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter your full name"
@@ -218,7 +216,7 @@ const ContactUs: React.FC = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+                    className={`w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                       errors.email ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter your email address"
@@ -242,7 +240,7 @@ const ContactUs: React.FC = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                     placeholder="Enter your phone number (optional)"
                   />
                 </div>
@@ -258,10 +256,10 @@ const ContactUs: React.FC = () => {
                   <textarea
                     id="message"
                     name="message"
-                    rows={5}
+                    rows={4}
                     value={formData.message}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+                    className={`w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                       errors.message ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Tell us about your inquiry..."
@@ -277,7 +275,7 @@ const ContactUs: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center space-x-2"
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-blue-800 text-white font-semibold shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200 disabled:bg-blue-400"
                 >
                   {isSubmitting ? (
                     <>

@@ -1,20 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import {
-  FaEdit,
-  FaSave,
-  FaTimes,
-  FaHeart,
-  FaSearch,
-  FaMapMarkerAlt,
-  FaBed,
-  FaBath,
-  FaRulerCombined,
-  FaEye,
-  FaTrash,
-  FaEnvelope,
-} from "react-icons/fa";
+// Icons removed for a cleaner, professional UI
 import { useAuth } from "../../context/AuthContext";
 import apiClient from "../../services/api";
 
@@ -36,7 +22,7 @@ interface Property {
 
 // state type
 type State = {
-  favorites: Property[];
+  properties: Property[];
   loading: boolean;
   error: string;
 };
@@ -45,8 +31,7 @@ type State = {
 type Action =
   | { type: "FETCH_START" }
   | { type: "FETCH_SUCCESS"; payload: Property[] }
-  | { type: "FETCH_ERROR"; payload: string }
-  | { type: "REMOVE_FAVORITE"; payload: string };
+  | { type: "FETCH_ERROR"; payload: string };
 
 // reducer
 function reducer(state: State, action: Action): State {
@@ -54,14 +39,9 @@ function reducer(state: State, action: Action): State {
     case "FETCH_START":
       return { ...state, loading: true, error: "" };
     case "FETCH_SUCCESS":
-      return { favorites: action.payload, loading: false, error: "" };
+      return { properties: action.payload, loading: false, error: "" };
     case "FETCH_ERROR":
       return { ...state, loading: false, error: action.payload };
-    case "REMOVE_FAVORITE":
-      return {
-        ...state,
-        favorites: state.favorites.filter((p) => p._id !== action.payload),
-      };
     default:
       return state;
   }
@@ -92,7 +72,7 @@ const BuyerDashboard = () => {
   const navigate = useNavigate();
 
   const [state, dispatch] = useReducer(reducer, {
-    favorites: [],
+    properties: [],
     loading: true,
     error: "",
   });
@@ -119,35 +99,20 @@ const BuyerDashboard = () => {
     setTimeout(() => setAlert({ type: null, message: "" }), 3000);
   };
 
-  // fetch favorites
-  const fetchFavorites = async () => {
+  // fetch all properties from database
+  const fetchAllProperties = async () => {
     try {
       dispatch({ type: "FETCH_START" });
-      const response = await apiClient.getFavorites();
+      const response = await apiClient.getProperties();
       if (response.success && response.data) {
-        dispatch({ type: "FETCH_SUCCESS", payload: response.data });
+        dispatch({ type: "FETCH_SUCCESS", payload: response.data.properties });
       } else {
-        dispatch({ type: "FETCH_ERROR", payload: "Failed to load favorites" });
-        showAlert("error", "Failed to load favorites");
+        dispatch({ type: "FETCH_ERROR", payload: "Failed to load properties" });
+        showAlert("error", "Failed to load properties");
       }
     } catch {
-      dispatch({ type: "FETCH_ERROR", payload: "Error loading favorites" });
-      showAlert("error", "Error loading favorites");
-    }
-  };
-
-  // remove favorite
-  const handleRemoveFavorite = async (propertyId: string) => {
-    try {
-      const response = await apiClient.removeFromFavorites(propertyId);
-      if (response.success) {
-        dispatch({ type: "REMOVE_FAVORITE", payload: propertyId });
-        showAlert("success", "Removed from favorites");
-      } else {
-        showAlert("error", "Failed to remove favorite");
-      }
-    } catch {
-      showAlert("error", "Error removing favorite");
+      dispatch({ type: "FETCH_ERROR", payload: "Error loading properties" });
+      showAlert("error", "Error loading properties");
     }
   };
 
@@ -174,7 +139,7 @@ const BuyerDashboard = () => {
     if (!user || user.role !== "buyer") {
       // navigate("/login");
     } else {
-      fetchFavorites();
+      fetchAllProperties();
     }
   }, [user, navigate]);
 
@@ -187,31 +152,31 @@ const BuyerDashboard = () => {
       {/* profile card */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-10 border border-gray-100">
         <div className="flex justify-between items-center border-b pb-3">
-          <h2 className="text-2xl font-bold text-blue-900">👤 My Profile</h2>
+          <h2 className="text-2xl font-bold text-blue-900">My Profile</h2>
           {editing ? (
             <div className="flex gap-3">
               <button
                 onClick={handleProfileUpdate}
                 disabled={updatingProfile}
-                className={`p-2 rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition ${
+                className={`px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition text-sm font-medium ${
                   updatingProfile ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                <FaSave />
+                Save
               </button>
               <button
                 onClick={() => setEditing(false)}
-                className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition"
+                className="px-3 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 transition text-sm font-medium"
               >
-                <FaTimes />
+                Cancel
               </button>
             </div>
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="p-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+              className="px-3 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-medium"
             >
-              <FaEdit />
+              Edit Profile
             </button>
           )}
         </div>
@@ -251,15 +216,12 @@ const BuyerDashboard = () => {
 
       {/* Quick Actions */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-10 border border-gray-100">
-        <h2 className="text-2xl font-bold text-blue-900 mb-6">
-          🚀 Quick Actions
-        </h2>
+        <h2 className="text-2xl font-bold text-blue-900 mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <button
             onClick={() => navigate("/properties")}
             className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-xl text-center transition-all duration-300 hover:shadow-lg"
           >
-            <FaSearch className="text-3xl mx-auto mb-3" />
             <h3 className="text-lg font-semibold mb-2">Browse Properties</h3>
             <p className="text-blue-100 text-sm">
               Explore available properties
@@ -270,7 +232,6 @@ const BuyerDashboard = () => {
             onClick={() => navigate("/favorites")}
             className="bg-red-600 hover:bg-red-700 text-white p-6 rounded-xl text-center transition-all duration-300 hover:shadow-lg"
           >
-            <FaHeart className="text-3xl mx-auto mb-3" />
             <h3 className="text-lg font-semibold mb-2">View Favorites</h3>
             <p className="text-red-100 text-sm">See your saved properties</p>
           </button>
@@ -279,7 +240,6 @@ const BuyerDashboard = () => {
             onClick={() => navigate("/contact")}
             className="bg-green-600 hover:bg-green-700 text-white p-6 rounded-xl text-center transition-all duration-300 hover:shadow-lg"
           >
-            <FaEnvelope className="text-3xl mx-auto mb-3" />
             <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
             <p className="text-green-100 text-sm">Get in touch for support</p>
           </button>
@@ -289,10 +249,10 @@ const BuyerDashboard = () => {
       {/* favorites section */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-10 border border-gray-100">
         <div className="flex justify-between items-center border-b pb-3 mb-6">
-          <h2 className="text-2xl font-bold text-blue-900">❤️ My Favorites</h2>
+          <h2 className="text-2xl font-bold text-blue-900">All Properties</h2>
           <div className="text-sm text-gray-500">
-            {state.favorites.length}{" "}
-            {state.favorites.length === 1 ? "property" : "properties"} saved
+            {state.properties.length}{" "}
+            {state.properties.length === 1 ? "property" : "properties"} available
           </div>
         </div>
 
@@ -309,133 +269,81 @@ const BuyerDashboard = () => {
           </div>
         )}
 
-        {state.favorites.length === 0 && !state.loading ? (
+        {state.properties.length === 0 && !state.loading ? (
           <div className="text-center py-12">
-            <FaHeart className="text-6xl text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">
-              No favorites yet
+              No properties available
             </h3>
             <p className="text-gray-500 mb-6">
-              Start exploring properties and add them to your favorites!
+              Check back soon for new property listings!
             </p>
-            <button
-              onClick={() => navigate("/properties")}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
-            >
-              Browse Properties
-            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {state.favorites.map((property) => (
-              <motion.div
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {state.properties.map((property) => (
+              <div
                 key={property._id}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 overflow-hidden p-4"
               >
-                <div className="relative h-48">
-                  <img
-                    src={
-                      property.image ||
-                      property.images?.[0] ||
-                      "https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image"
-                    }
-                    alt={property.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (
-                        target.src !==
-                        "https://via.placeholder.com/64x64/cccccc/666666?text=Property"
-                      ) {
-                        target.src =
-                          "https://via.placeholder.com/64x64/cccccc/666666?text=Property";
-                      }
-                    }}
-                  />
-                  <div className="absolute top-3 right-3">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        property.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : property.status === "sold"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {property.status || "active"}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
-                </div>
-
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-base font-semibold text-gray-900 leading-tight flex-1 line-clamp-1">
                     {property.title}
                   </h3>
+                  <span
+                    className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${
+                      property.status === "active"
+                        ? "bg-green-100 text-green-800"
+                        : property.status === "sold"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {property.status || "active"}
+                  </span>
+                </div>
 
-                  <div className="flex items-center text-gray-600 mb-3">
-                    <FaMapMarkerAlt className="mr-2 text-blue-500" />
-                    <span className="text-sm">{property.location}</span>
+                <div className="flex items-center text-gray-600 mb-2">
+                  <span className="text-sm">{property.location}</span>
+                </div>
+
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-xl font-bold text-blue-600">
+                    ₹{property.price.toLocaleString()}
                   </div>
-
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-2xl font-bold text-blue-600">
-                      ₹{property.price.toLocaleString()}
-                    </div>
-                    <div className="text-sm text-gray-500 capitalize">
-                      {property.propertyType || "Property"}
-                    </div>
-                  </div>
-
-                  {(property.bedrooms ||
-                    property.bathrooms ||
-                    property.area) && (
-                    <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
-                      {property.bedrooms && (
-                        <div className="flex items-center">
-                          <FaBed className="mr-1 text-blue-500" />
-                          <span>{property.bedrooms}</span>
-                        </div>
-                      )}
-                      {property.bathrooms && (
-                        <div className="flex items-center">
-                          <FaBath className="mr-1 text-blue-500" />
-                          <span>{property.bathrooms}</span>
-                        </div>
-                      )}
-                      {property.area && (
-                        <div className="flex items-center">
-                          <FaRulerCombined className="mr-1 text-blue-500" />
-                          <span>{property.area} sq ft</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {property.description}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={() => navigate(`/property/${property._id}`)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center"
-                    >
-                      <FaEye className="mr-2" />
-                      View Details
-                    </button>
-                    <button
-                      onClick={() => handleRemoveFavorite(property._id)}
-                      className="text-red-500 hover:text-red-600 font-medium transition flex items-center p-2 rounded-full hover:bg-red-50"
-                      title="Remove from favorites"
-                    >
-                      <FaTrash />
-                    </button>
+                  <div className="text-xs text-gray-500 capitalize">
+                    {property.propertyType || "Property"}
                   </div>
                 </div>
-              </motion.div>
+
+                {(property.bedrooms ||
+                  property.bathrooms ||
+                  property.area) && (
+                  <div className="text-xs text-gray-600 mb-3">
+                    <span>
+                      {property.bedrooms ? `${property.bedrooms} Beds` : ""}
+                    </span>
+                    {property.bedrooms && property.bathrooms && (
+                      <span className="mx-1">•</span>
+                    )}
+                    <span>
+                      {property.bathrooms ? `${property.bathrooms} Baths` : ""}
+                    </span>
+                    {(property.bedrooms || property.bathrooms) && property.area && (
+                      <span className="mx-1">•</span>
+                    )}
+                    <span>{property.area ? `${property.area} sq ft` : ""}</span>
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => navigate(`/property/${property._id}`)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-4 rounded text-xs font-medium transition flex-1 text-center"
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         )}

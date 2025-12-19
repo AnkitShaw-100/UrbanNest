@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://real-estate-f6ma.vercel.app'
+const API_BASE_URL = 'http://localhost:5000'
 
 // Type definitions
 interface ApiResponse<T = unknown> {
@@ -86,7 +86,7 @@ interface RequestOptions {
 }
 
 class ApiClient {
-  private baseURL: string;
+  public baseURL: string;
 
   constructor() {
     this.baseURL = API_BASE_URL;
@@ -266,65 +266,59 @@ class ApiClient {
     });
     const queryString = queryParams.toString();
 
-    const tryEndpoints = [
-      queryString ? `/api/properties?${queryString}` : '/properties',
-      queryString ? `/api/listings?${queryString}` : '/listings',
-    ];
+    try {
+      const raw = await fetch(`${this.baseURL}/api/listings${queryString ? '?' + queryString : ''}`).then(res => res.json());
+      
+      // Normalize: backend may return an array or a wrapped object
+      if (Array.isArray(raw)) {
+        return {
+          success: true,
+          data: {
+            properties: raw,
+            total: raw.length,
+            page: 1,
+            pages: 1,
+          },
+        };
+      }
 
-    for (const endpoint of tryEndpoints) {
-      try {
-  const raw = await fetch(this.baseURL + endpoint).then(res => res.json());
-        // Normalize: backend may return an array or a wrapped object
-        if (Array.isArray(raw)) {
-          return {
-            success: true,
-            data: {
-              properties: raw as Property[],
-              total: raw.length,
-              page: 1,
-              pages: 1,
-            },
-          };
-        }
-        // Handle backend that returns { listings, total, page, pages }
-        if (raw && Array.isArray((raw as any).listings)) {
-          const listings = (raw as any).listings as Property[];
-          return {
-            success: true,
-            data: {
-              properties: listings,
-              total: (raw as any).total ?? listings.length,
-              page: (raw as any).page ?? 1,
-              pages: (raw as any).pages ?? 1,
-            },
-          };
-        }
-        if (raw && Array.isArray(raw.properties)) {
-          return { success: true, data: { properties: raw.properties, total: raw.total ?? raw.properties.length, page: raw.page ?? 1, pages: raw.pages ?? 1 } };
-        }
-        // Some APIs return { data: { properties: [] }, pagination... }
-        if (raw && raw.data && Array.isArray(raw.data.properties)) {
-          return { success: true, data: { properties: raw.data.properties, total: raw.data.total ?? raw.data.properties.length, page: raw.data.page ?? 1, pages: raw.data.pages ?? 1 } };
-        }
-        // If object looks like a single property list under a key
-        if (raw && typeof raw === 'object') {
-          const maybeArray = (raw as any).data || (raw as any).items || (raw as any).results;
-          if (Array.isArray(maybeArray)) {
-            return {
-              success: true,
-              data: {
-                properties: maybeArray,
-                total: maybeArray.length,
-                page: (raw as any).page || 1,
-                pages: (raw as any).pages || 1,
-              },
-            };
-          }
-        }
-      } catch {}
+      // Backend returns { total, page, pages, listings } OR just an array
+      if (raw.listings) {
+        return {
+          success: true,
+          data: {
+            properties: raw.listings,
+            total: raw.total || raw.listings.length,
+            page: raw.page || 1,
+            pages: raw.pages || 1,
+          },
+        };
+      }
+
+      if (raw.success && raw.data) {
+        const properties = Array.isArray(raw.data) ? raw.data : raw.data.properties || [];
+        return {
+          success: true,
+          data: {
+            properties,
+            total: raw.total || properties.length,
+            page: raw.page || 1,
+            pages: raw.pages || 1,
+          },
+        };
+      }
+
+      return {
+        success: false,
+        error: raw.message || 'Failed to fetch properties',
+      };
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      return {
+        success: false,
+        error: 'Error fetching properties',
+      };
     }
-
-    return { success: false, error: 'Failed to fetch properties' } as unknown as ApiResponse<{ properties: Property[], total: number, page: number, pages: number }>;
   }
 
   async getProperty(id: string | number): Promise<ApiResponse<Property>> {
