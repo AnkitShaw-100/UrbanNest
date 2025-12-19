@@ -1,4 +1,10 @@
-const API_BASE_URL = 'http://localhost:5000'
+// Resolve API base URL for both local dev and production.
+// Priority: VITE_API_BASE_URL env > localhost fallback > deployed default
+const API_BASE_URL =
+  (typeof import.meta !== 'undefined' && (import.meta as any)?.env?.VITE_API_BASE_URL) ||
+  (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5000'
+    : 'https://real-estate-backend-three-rust.vercel.app');
 
 // Type definitions
 interface ApiResponse<T = unknown> {
