@@ -4,7 +4,6 @@ import Amiya from "../../assets/team/Amiya.jpg";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 
 const AboutUs = () => {
-  // 👥 Team members data (name, role, image, socials)
   const teamMembers = [
     {
       name: "Ankit Shaw",
@@ -44,8 +43,9 @@ const AboutUs = () => {
         </h2>
         <div className="w-20 h-1 bg-blue-900 mx-auto mb-6"></div>
         <p className="text-gray-600 text-md sm:text-lg max-w-3xl mx-auto">
-          Behind our real estate platform is a talented team of developers and designers
-          committed to transforming property buying and selling into a seamless experience.
+          Behind our real estate platform is a talented team of developers and
+          designers committed to transforming property buying and selling into a
+          seamless experience.
         </p>
       </div>
 
@@ -86,13 +86,21 @@ const AboutUs = () => {
 
             {/* 👤 Name + Role + Small icons */}
             <div className="p-6 text-center">
-              <h3 className="text-xl font-semibold text-gray-900">{member.name}</h3>
+              <h3 className="text-xl font-semibold text-gray-900">
+                {member.name}
+              </h3>
               <p className="text-blue-900 font-medium">{member.role}</p>
               <div className="mt-4 flex justify-center space-x-3">
-                <a href={member.social.linkedin} className="text-gray-400 hover:text-blue-800">
+                <a
+                  href={member.social.linkedin}
+                  className="text-gray-400 hover:text-blue-800"
+                >
                   <FaLinkedin className="w-4 h-4" />
                 </a>
-                <a href={member.social.github} className="text-gray-400 hover:text-blue-800">
+                <a
+                  href={member.social.github}
+                  className="text-gray-400 hover:text-blue-800"
+                >
                   <FaGithub className="w-4 h-4" />
                 </a>
               </div>
@@ -131,10 +139,11 @@ const AboutUs = () => {
           Our Mission
         </h3>
         <p className="text-gray-600 text-md sm:text-lg leading-relaxed">
-          Our mission is to redefine the real estate experience by building a smart,
-          user-friendly platform that connects buyers and sellers seamlessly.
-          We aim to empower property transactions through innovation, transparency,
-          and trust—helping people find their dream homes and investments with ease.
+          Our mission is to redefine the real estate experience by building a
+          smart, user-friendly platform that connects buyers and sellers
+          seamlessly. We aim to empower property transactions through
+          innovation, transparency, and trust—helping people find their dream
+          homes and investments with ease.
         </p>
       </div>
     </div>

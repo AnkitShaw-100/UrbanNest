@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaPlus, FaEdit, FaTrash, FaEye, FaHeart, FaBed, FaBath, FaRulerCombined } from "react-icons/fa";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaHeart,
+  FaBed,
+  FaBath,
+  FaRulerCombined,
+} from "react-icons/fa";
 import apiClient from "../../services/api";
 
 interface Property {
@@ -30,7 +39,7 @@ const SellerDashboard: React.FC = () => {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
 
   useEffect(() => {
-    if (!user || user.role !== 'seller') {
+    if (!user || user.role !== "seller") {
       // navigate('/login');
       return;
     }
@@ -60,7 +69,8 @@ const SellerDashboard: React.FC = () => {
         setProperties(response.data);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to fetch properties";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch properties";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -68,7 +78,7 @@ const SellerDashboard: React.FC = () => {
   };
 
   const handleAddProperty = () => {
-    navigate('/seller/add-property');
+    navigate("/seller/add-property");
   };
 
   const handleEditProperty = (propertyId: string) => {
@@ -76,14 +86,19 @@ const SellerDashboard: React.FC = () => {
   };
 
   const handleDeleteProperty = async (propertyId: string) => {
-    if (window.confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this property? This action cannot be undone."
+      )
+    ) {
       try {
         await apiClient.deleteProperty(propertyId);
-        setProperties(properties.filter(p => p._id !== propertyId));
+        setProperties(properties.filter((p) => p._id !== propertyId));
         // Show success message
         setError(""); // Clear any previous errors
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to delete property";
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to delete property";
         setError(errorMessage);
       }
     }
@@ -92,11 +107,16 @@ const SellerDashboard: React.FC = () => {
   const handleStatusChange = async (propertyId: string, newStatus: string) => {
     try {
       await apiClient.updateProperty(propertyId, { status: newStatus });
-      setProperties(properties.map(p =>
-        p._id === propertyId ? { ...p, status: newStatus } : p
-      ));
+      setProperties(
+        properties.map((p) =>
+          p._id === propertyId ? { ...p, status: newStatus } : p
+        )
+      );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to update property status";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to update property status";
       setError(errorMessage);
     }
   };
@@ -104,9 +124,8 @@ const SellerDashboard: React.FC = () => {
   const handleViewProperty = (propertyId: string) => {
     navigate(`/property/${propertyId}`);
   };
-  
-  if(!user)
-  {
+
+  if (!user) {
     return;
   }
 
@@ -133,7 +152,9 @@ const SellerDashboard: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">Seller Dashboard</h1>
+                <h1 className="text-3xl font-bold text-gray-800">
+                  Seller Dashboard
+                </h1>
                 <p className="text-gray-600 mt-2">Welcome back, {user?.name}</p>
               </div>
               <button
@@ -149,19 +170,30 @@ const SellerDashboard: React.FC = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800">Total Properties</h3>
-              <p className="text-3xl font-bold text-blue-600">{properties.length}</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800">Active Listings</h3>
-              <p className="text-3xl font-bold text-green-600">
-                {properties.filter(p => p.status === 'active').length}
+              <h3 className="text-lg font-semibold text-gray-800">
+                Total Properties
+              </h3>
+              <p className="text-3xl font-bold text-blue-600">
+                {properties.length}
               </p>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800">Total Value</h3>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Active Listings
+              </h3>
+              <p className="text-3xl font-bold text-green-600">
+                {properties.filter((p) => p.status === "active").length}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Total Value
+              </h3>
               <p className="text-3xl font-bold text-purple-600">
-                ₹{properties.reduce((sum, p) => sum + p.price, 0).toLocaleString()}
+                ₹
+                {properties
+                  .reduce((sum, p) => sum + p.price, 0)
+                  .toLocaleString()}
               </p>
             </div>
           </div>
@@ -169,7 +201,9 @@ const SellerDashboard: React.FC = () => {
           {/* Properties Grid */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Your Properties</h2>
+              <h2 className="text-xl font-semibold text-gray-800">
+                Your Properties
+              </h2>
             </div>
 
             {loading ? (
@@ -183,7 +217,9 @@ const SellerDashboard: React.FC = () => {
               </div>
             ) : properties.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-600">No properties found. Add your first property!</p>
+                <p className="text-gray-600">
+                  No properties found. Add your first property!
+                </p>
                 <button
                   onClick={handleAddProperty}
                   className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
@@ -203,26 +239,34 @@ const SellerDashboard: React.FC = () => {
                   >
                     <div className="relative h-48">
                       <img
-                        src={property.images && property.images.length > 0 ? property.images[0] : 'https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image'}
+                        src={
+                          property.images && property.images.length > 0
+                            ? property.images[0]
+                            : "https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image"
+                        }
                         alt={property.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = 'https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image';
+                          target.src =
+                            "https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image";
                         }}
                       />
                       <div className="absolute top-3 right-3">
                         <select
                           value={property.status}
-                          onChange={(e) => handleStatusChange(property._id, e.target.value)}
-                          className={`px-2 py-1 text-xs font-semibold rounded-full border-0 focus:ring-2 focus:ring-blue-500 ${property.status === 'active'
-                              ? 'bg-green-100 text-green-800'
-                              : property.status === 'sold'
-                                ? 'bg-red-100 text-red-800'
-                                : property.status === 'rented'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-yellow-100 text-yellow-800'
-                            }`}
+                          onChange={(e) =>
+                            handleStatusChange(property._id, e.target.value)
+                          }
+                          className={`px-2 py-1 text-xs font-semibold rounded-full border-0 focus:ring-2 focus:ring-blue-500 ${
+                            property.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : property.status === "sold"
+                              ? "bg-red-100 text-red-800"
+                              : property.status === "rented"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
                         >
                           <option value="active">Active</option>
                           <option value="inactive">Inactive</option>
@@ -231,7 +275,7 @@ const SellerDashboard: React.FC = () => {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="p-4">
                       <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
                         {property.title}
@@ -239,7 +283,7 @@ const SellerDashboard: React.FC = () => {
                       <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                         {property.description}
                       </p>
-                      
+
                       <div className="flex items-center justify-between mb-3">
                         <div className="text-2xl font-bold text-blue-600">
                           ₹{property.price.toLocaleString()}
@@ -248,7 +292,7 @@ const SellerDashboard: React.FC = () => {
                           {property.propertyType}
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
                         <div className="flex items-center">
                           <FaBed className="mr-1 text-blue-500" />
@@ -263,7 +307,7 @@ const SellerDashboard: React.FC = () => {
                           <span>{property.area || 0} sq ft</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="text-sm text-gray-500">
                           {property.location}
@@ -302,8 +346,12 @@ const SellerDashboard: React.FC = () => {
           {/* Favorites Section */}
           <div className="bg-white rounded-lg shadow-md p-6 mt-8">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">❤️ My Favorites</h2>
-              <p className="text-gray-600 text-sm">Properties you've marked as favorites</p>
+              <h2 className="text-xl font-semibold text-gray-800">
+                ❤️ My Favorites
+              </h2>
+              <p className="text-gray-600 text-sm">
+                Properties you've marked as favorites
+              </p>
             </div>
 
             {favoritesLoading ? (
@@ -314,9 +362,11 @@ const SellerDashboard: React.FC = () => {
             ) : favorites.length === 0 ? (
               <div className="text-center py-8">
                 <FaHeart className="text-4xl text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">No favorites yet. Start exploring properties!</p>
+                <p className="text-gray-500">
+                  No favorites yet. Start exploring properties!
+                </p>
                 <button
-                  onClick={() => navigate('/properties')}
+                  onClick={() => navigate("/properties")}
                   className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
                 >
                   Browse Properties
@@ -332,21 +382,35 @@ const SellerDashboard: React.FC = () => {
                     <div className="flex items-start space-x-3">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0">
                         <img
-                          src={property.images && property.images.length > 0 ? property.images[0] : 'https://via.placeholder.com/64x64/cccccc/666666?text=Property'}
+                          src={
+                            property.images && property.images.length > 0
+                              ? property.images[0]
+                              : "https://via.placeholder.com/64x64/cccccc/666666?text=Property"
+                          }
                           alt={property.title}
                           className="w-full h-full object-cover rounded-lg"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            if (target.src !== 'https://via.placeholder.com/64x64/cccccc/666666?text=Property') {
-                              target.src = 'https://via.placeholder.com/64x64/cccccc/666666?text=Property';
+                            if (
+                              target.src !==
+                              "https://via.placeholder.com/64x64/cccccc/666666?text=Property"
+                            ) {
+                              target.src =
+                                "https://via.placeholder.com/64x64/cccccc/666666?text=Property";
                             }
                           }}
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900 truncate">{property.title}</h4>
-                        <p className="text-sm text-gray-600 truncate">{property.location}</p>
-                        <p className="text-lg font-bold text-blue-600">₹{property.price.toLocaleString()}</p>
+                        <h4 className="font-medium text-gray-900 truncate">
+                          {property.title}
+                        </h4>
+                        <p className="text-sm text-gray-600 truncate">
+                          {property.location}
+                        </p>
+                        <p className="text-lg font-bold text-blue-600">
+                          ₹{property.price.toLocaleString()}
+                        </p>
                         <button
                           onClick={() => navigate(`/property/${property._id}`)}
                           className="text-blue-600 hover:text-blue-700 text-sm font-medium"
@@ -366,4 +430,4 @@ const SellerDashboard: React.FC = () => {
   );
 };
 
-export default SellerDashboard; 
+export default SellerDashboard;

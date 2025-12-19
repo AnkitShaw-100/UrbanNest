@@ -1,7 +1,20 @@
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaEdit, FaSave, FaTimes, FaHeart, FaSearch, FaMapMarkerAlt, FaBed, FaBath, FaRulerCombined, FaEye, FaTrash, FaEnvelope } from "react-icons/fa";
+import {
+  FaEdit,
+  FaSave,
+  FaTimes,
+  FaHeart,
+  FaSearch,
+  FaMapMarkerAlt,
+  FaBed,
+  FaBath,
+  FaRulerCombined,
+  FaEye,
+  FaTrash,
+  FaEnvelope,
+} from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import apiClient from "../../services/api";
 
@@ -28,8 +41,15 @@ type State = {
   error: string;
 };
 
+// action type
+type Action =
+  | { type: "FETCH_START" }
+  | { type: "FETCH_SUCCESS"; payload: Property[] }
+  | { type: "FETCH_ERROR"; payload: string }
+  | { type: "REMOVE_FAVORITE"; payload: string };
+
 // reducer
-function reducer(state: State, action: any): State {
+function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "FETCH_START":
       return { ...state, loading: true, error: "" };
@@ -61,7 +81,7 @@ const AlertBox = ({
     "p-3 mb-4 rounded-lg text-center font-medium shadow-md animate-fade-in";
   const styles: Record<"success" | "error", string> = {
     success: "bg-green-100 text-green-800 border border-green-300",
-    error: "bg-red-100 text-red-800 border border-red-300"
+    error: "bg-red-100 text-red-800 border border-red-300",
   };
 
   return <div className={`${baseStyle} ${styles[type]}`}>{message}</div>;
@@ -173,8 +193,9 @@ const BuyerDashboard = () => {
               <button
                 onClick={handleProfileUpdate}
                 disabled={updatingProfile}
-                className={`p-2 rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition ${updatingProfile ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`p-2 rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition ${
+                  updatingProfile ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 <FaSave />
               </button>
@@ -216,36 +237,46 @@ const BuyerDashboard = () => {
           </div>
         ) : (
           <div className="mt-4 text-gray-700 space-y-2">
-            <p><span className="font-medium text-gray-900">Name:</span> {user?.name}</p>
-            <p><span className="font-medium text-gray-900">Email:</span> {user?.email}</p>
+            <p>
+              <span className="font-medium text-gray-900">Name:</span>{" "}
+              {user?.name}
+            </p>
+            <p>
+              <span className="font-medium text-gray-900">Email:</span>{" "}
+              {user?.email}
+            </p>
           </div>
         )}
       </div>
 
       {/* Quick Actions */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-10 border border-gray-100">
-        <h2 className="text-2xl font-bold text-blue-900 mb-6">🚀 Quick Actions</h2>
+        <h2 className="text-2xl font-bold text-blue-900 mb-6">
+          🚀 Quick Actions
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <button
-            onClick={() => navigate('/properties')}
+            onClick={() => navigate("/properties")}
             className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-xl text-center transition-all duration-300 hover:shadow-lg"
           >
             <FaSearch className="text-3xl mx-auto mb-3" />
             <h3 className="text-lg font-semibold mb-2">Browse Properties</h3>
-            <p className="text-blue-100 text-sm">Explore available properties</p>
+            <p className="text-blue-100 text-sm">
+              Explore available properties
+            </p>
           </button>
-          
+
           <button
-            onClick={() => navigate('/favorites')}
+            onClick={() => navigate("/favorites")}
             className="bg-red-600 hover:bg-red-700 text-white p-6 rounded-xl text-center transition-all duration-300 hover:shadow-lg"
           >
             <FaHeart className="text-3xl mx-auto mb-3" />
             <h3 className="text-lg font-semibold mb-2">View Favorites</h3>
             <p className="text-red-100 text-sm">See your saved properties</p>
           </button>
-          
+
           <button
-            onClick={() => navigate('/contact')}
+            onClick={() => navigate("/contact")}
             className="bg-green-600 hover:bg-green-700 text-white p-6 rounded-xl text-center transition-all duration-300 hover:shadow-lg"
           >
             <FaEnvelope className="text-3xl mx-auto mb-3" />
@@ -260,7 +291,8 @@ const BuyerDashboard = () => {
         <div className="flex justify-between items-center border-b pb-3 mb-6">
           <h2 className="text-2xl font-bold text-blue-900">❤️ My Favorites</h2>
           <div className="text-sm text-gray-500">
-            {state.favorites.length} {state.favorites.length === 1 ? 'property' : 'properties'} saved
+            {state.favorites.length}{" "}
+            {state.favorites.length === 1 ? "property" : "properties"} saved
           </div>
         </div>
 
@@ -270,7 +302,7 @@ const BuyerDashboard = () => {
             <p className="mt-2 text-gray-500">Loading favorites...</p>
           </div>
         )}
-        
+
         {state.error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-600">Error: {state.error}</p>
@@ -280,10 +312,14 @@ const BuyerDashboard = () => {
         {state.favorites.length === 0 && !state.loading ? (
           <div className="text-center py-12">
             <FaHeart className="text-6xl text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No favorites yet</h3>
-            <p className="text-gray-500 mb-6">Start exploring properties and add them to your favorites!</p>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              No favorites yet
+            </h3>
+            <p className="text-gray-500 mb-6">
+              Start exploring properties and add them to your favorites!
+            </p>
             <button
-              onClick={() => navigate('/properties')}
+              onClick={() => navigate("/properties")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
             >
               Browse Properties
@@ -298,52 +334,64 @@ const BuyerDashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-
-
                 <div className="relative h-48">
                   <img
-                    src={property.image || property.images?.[0] || 'https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image'}
+                    src={
+                      property.image ||
+                      property.images?.[0] ||
+                      "https://via.placeholder.com/400x300/cccccc/666666?text=Property+Image"
+                    }
                     alt={property.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      if (target.src !== 'https://via.placeholder.com/64x64/cccccc/666666?text=Property') {
-                        target.src = 'https://via.placeholder.com/64x64/cccccc/666666?text=Property';
+                      if (
+                        target.src !==
+                        "https://via.placeholder.com/64x64/cccccc/666666?text=Property"
+                      ) {
+                        target.src =
+                          "https://via.placeholder.com/64x64/cccccc/666666?text=Property";
                       }
                     }}
                   />
                   <div className="absolute top-3 right-3">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      property.status === 'active' ? 'bg-green-100 text-green-800' : 
-                      property.status === 'sold' ? 'bg-red-100 text-red-800' : 
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {property.status || 'active'}
+                    <span
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        property.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : property.status === "sold"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {property.status || "active"}
                     </span>
                   </div>
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
                 </div>
-                
+
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
                     {property.title}
                   </h3>
-                  
+
                   <div className="flex items-center text-gray-600 mb-3">
                     <FaMapMarkerAlt className="mr-2 text-blue-500" />
                     <span className="text-sm">{property.location}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-2xl font-bold text-blue-600">
                       ₹{property.price.toLocaleString()}
                     </div>
                     <div className="text-sm text-gray-500 capitalize">
-                      {property.propertyType || 'Property'}
+                      {property.propertyType || "Property"}
                     </div>
                   </div>
-                  
-                  {(property.bedrooms || property.bathrooms || property.area) && (
+
+                  {(property.bedrooms ||
+                    property.bathrooms ||
+                    property.area) && (
                     <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
                       {property.bedrooms && (
                         <div className="flex items-center">
@@ -365,11 +413,11 @@ const BuyerDashboard = () => {
                       )}
                     </div>
                   )}
-                  
+
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {property.description}
                   </p>
-                  
+
                   <div className="flex items-center justify-between">
                     <button
                       onClick={() => navigate(`/property/${property._id}`)}

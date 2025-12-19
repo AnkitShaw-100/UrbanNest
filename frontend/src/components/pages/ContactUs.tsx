@@ -37,8 +37,7 @@ const ContactUs: React.FC = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
     }
-    if (!formData.message.trim())
-      newErrors.message = "Message is required";
+    if (!formData.message.trim()) newErrors.message = "Message is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -92,8 +91,8 @@ const ContactUs: React.FC = () => {
               Contact Us
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Have questions about our properties or services?  
-              We’d love to hear from you — let’s find your dream home together.
+              Have questions about our properties or services? We’d love to hear
+              from you — let’s find your dream home together.
             </p>
           </div>
 
@@ -104,8 +103,8 @@ const ContactUs: React.FC = () => {
                 Get in Touch
               </h2>
               <p className="text-gray-600">
-                Reach out to us directly or fill out the form —  
-                we usually reply within 24 hours.
+                Reach out to us directly or fill out the form — we usually reply
+                within 24 hours.
               </p>
 
               <div className="space-y-6">
@@ -139,8 +138,7 @@ const ContactUs: React.FC = () => {
                   <div>
                     <h3 className="font-semibold text-gray-800">Office</h3>
                     <p className="text-gray-600">
-                      123 Real Estate Plaza,  
-                      College More, Kolkata - 91
+                      123 Real Estate Plaza, College More, Kolkata - 91
                     </p>
                   </div>
                 </div>
@@ -153,7 +151,7 @@ const ContactUs: React.FC = () => {
                   <div>
                     <h3 className="font-semibold text-gray-800">Hours</h3>
                     <p className="text-gray-600">
-                      Mon - Fri: 9:00 AM - 6:00 PM  
+                      Mon - Fri: 9:00 AM - 6:00 PM
                       <br />
                       Sat: 10:00 AM - 4:00 PM
                     </p>

@@ -58,9 +58,10 @@ const Login: React.FC = () => {
           navigate("/");
         }
       }, 500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Login error:", error);
-      setError(error.message || "Login failed. Please check your credentials.");
+      const errorMessage = error instanceof Error ? error.message : "Login failed. Please check your credentials.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -88,7 +89,7 @@ const Login: React.FC = () => {
             className="text-4xl font-extrabold text-gray-900 mb-3"
             variants={itemVariants}
           >
-            Welcome Back 
+            Welcome Back
           </motion.h2>
           <motion.p
             className="text-base text-gray-500 mb-8"
@@ -168,7 +169,10 @@ const Login: React.FC = () => {
           </motion.form>
 
           {/* Divider */}
-          <motion.div className="flex items-center my-6" variants={itemVariants}>
+          <motion.div
+            className="flex items-center my-6"
+            variants={itemVariants}
+          >
             <div className="flex-grow h-px bg-gray-300"></div>
             <span className="px-4 text-sm text-gray-400">OR</span>
             <div className="flex-grow h-px bg-gray-300"></div>
@@ -190,8 +194,7 @@ const Login: React.FC = () => {
           <motion.p
             className="text-sm text-center mt-2 text-gray-600"
             variants={itemVariants}
-          >
-          </motion.p>
+          ></motion.p>
         </motion.div>
 
         {/* Right - Image */}

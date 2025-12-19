@@ -18,7 +18,7 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-// 📌 Create property (Protected)
+// Create property (Protected)
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { title, description, price, location, images } = req.body;
@@ -37,7 +37,7 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// 📌 Get all properties (Public)
+//  Get all properties (Public)
 router.get("/", async (req, res) => {
   try {
     const properties = await Property.find().populate("owner", "name email");
@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 📌 Get single property (Public)
+//  Get single property (Public)
 router.get("/:id", async (req, res) => {
   try {
     const property = await Property.findById(req.params.id).populate(
@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// 📌 Update property (Only owner)
+//  Update property (Only owner)
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
     const property = await Property.findById(req.params.id);
@@ -81,7 +81,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// 📌 Delete property (Only owner)
+//  Delete property (Only owner)
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const property = await Property.findById(req.params.id);

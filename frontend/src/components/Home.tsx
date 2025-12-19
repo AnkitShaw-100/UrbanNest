@@ -36,7 +36,6 @@ const Home = () => {
           >
             Choose a property service and start exploring with ease.
           </motion.p>
-
         </div>
       </section>
 
@@ -77,9 +76,7 @@ const Home = () => {
               className="p-8 bg-white rounded-2xl shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 border border-gray-100"
             >
               <p className="text-3xl font-bold text-blue-900">{stat.value}</p>
-              <p className="text-gray-600 text-sm sm:text-base">
-                {stat.label}
-              </p>
+              <p className="text-gray-600 text-sm sm:text-base">{stat.label}</p>
             </motion.div>
           ))}
         </div>

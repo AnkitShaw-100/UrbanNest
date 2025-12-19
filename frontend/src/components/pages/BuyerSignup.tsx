@@ -68,7 +68,7 @@ const BuyerSignup: React.FC = () => {
         email: form.email,
         phone: form.phone,
         password: form.password,
-        role: "buyer"
+        role: "buyer",
       };
 
       const response = await apiClient.register(userData);
@@ -90,7 +90,10 @@ const BuyerSignup: React.FC = () => {
       }
     } catch (error) {
       console.error("Signup error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to create account. Please try again.";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to create account. Please try again.";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -129,7 +132,8 @@ const BuyerSignup: React.FC = () => {
             className="text-sm text-gray-500 mb-6"
             variants={itemVariants}
           >
-            Sign up as buyer to get access to exclusive property listings and updates.
+            Sign up as buyer to get access to exclusive property listings and
+            updates.
           </motion.p>
 
           {/* Error/Success Messages */}
@@ -219,10 +223,11 @@ const BuyerSignup: React.FC = () => {
             <motion.button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 rounded-lg font-medium transition ${loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-900 hover:bg-blue-800 text-white"
-                }`}
+              className={`w-full py-3 rounded-lg font-medium transition ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-900 hover:bg-blue-800 text-white"
+              }`}
               whileHover={!loading ? { scale: 1.02 } : {}}
               whileTap={!loading ? { scale: 0.98 } : {}}
               variants={itemVariants}
@@ -232,7 +237,10 @@ const BuyerSignup: React.FC = () => {
           </motion.form>
 
           {/* OR divider */}
-          <motion.div className="flex items-center my-6" variants={itemVariants}>
+          <motion.div
+            className="flex items-center my-6"
+            variants={itemVariants}
+          >
             <div className="flex-grow h-px bg-gray-300"></div>
             <span className="px-4 text-sm text-gray-400">OR</span>
             <div className="flex-grow h-px bg-gray-300"></div>

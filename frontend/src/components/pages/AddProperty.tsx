@@ -24,34 +24,55 @@ const AddProperty: React.FC = () => {
     bathrooms: "",
     area: "",
     amenities: [] as string[],
-    status: "active"
+    status: "active",
   });
 
   const [newAmenity, setNewAmenity] = useState("");
 
   // Dropdown options
   const propertyTypes = [
-    "house", "apartment", "land", "villa", "condo", "townhouse", "studio", "penthouse"
+    "house",
+    "apartment",
+    "land",
+    "villa",
+    "condo",
+    "townhouse",
+    "studio",
+    "penthouse",
   ];
 
   const availableAmenities = [
-    "Parking", "Garden", "Balcony", "Terrace", "Swimming Pool", "Gym",
-    "Security", "Lift", "Power Backup", "Water Supply", "Internet", "Furnished"
+    "Parking",
+    "Garden",
+    "Balcony",
+    "Terrace",
+    "Swimming Pool",
+    "Gym",
+    "Security",
+    "Lift",
+    "Power Backup",
+    "Water Supply",
+    "Internet",
+    "Furnished",
   ];
 
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
     if (error) setError("");
   };
 
   // Add new amenity
   const addAmenity = () => {
     if (newAmenity.trim() && !form.amenities.includes(newAmenity.trim())) {
-      setForm(prev => ({
+      setForm((prev) => ({
         ...prev,
-        amenities: [...prev.amenities, newAmenity.trim()]
+        amenities: [...prev.amenities, newAmenity.trim()],
       }));
       setNewAmenity("");
     }
@@ -59,9 +80,9 @@ const AddProperty: React.FC = () => {
 
   // Remove amenity
   const removeAmenity = (amenity: string) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      amenities: prev.amenities.filter(a => a !== amenity)
+      amenities: prev.amenities.filter((a) => a !== amenity),
     }));
   };
 
@@ -74,16 +95,38 @@ const AddProperty: React.FC = () => {
 
     try {
       // Basic validations
-      if (!form.title || !form.description || !form.price || !form.location ||
-        !form.propertyType || !form.bedrooms || !form.bathrooms || !form.area) {
+      if (
+        !form.title ||
+        !form.description ||
+        !form.price ||
+        !form.location ||
+        !form.propertyType ||
+        !form.bedrooms ||
+        !form.bathrooms ||
+        !form.area
+      ) {
         throw new Error("Please fill in all required fields");
       }
 
-      if (parseFloat(form.price) <= 0) throw new Error("Price must be greater than 0");
-      if (parseFloat(form.area) <= 0) throw new Error("Area must be greater than 0");
+      if (parseFloat(form.price) <= 0)
+        throw new Error("Price must be greater than 0");
+      if (parseFloat(form.area) <= 0)
+        throw new Error("Area must be greater than 0");
 
       // Build JSON payload for backend (ensure numeric fields are numbers)
-      const payload = {
+      const payload: {
+        title: string;
+        description: string;
+        price: number;
+        location: string;
+        propertyType: string;
+        status: string;
+        bedrooms: number;
+        bathrooms: number;
+        area: number;
+        amenities: string[];
+        images: string[];
+      } = {
         title: form.title,
         description: form.description,
         price: Number(form.price),
@@ -95,49 +138,46 @@ const AddProperty: React.FC = () => {
         area: Number(form.area),
         amenities: form.amenities,
         images: imageUrl ? [imageUrl] : [],
-      } as any;
+      };
 
-      const response = await apiClient.createProperty(payload as any);
+      const response = await apiClient.createProperty(payload);
 
       if (response.success) {
         // Persist locally for fallback display on /properties
         try {
-          const created = (response as any).data || {};
-          const existingRaw = localStorage.getItem('local_new_properties');
+          interface PropertyData {
+            createdAt?: string;
+            [key: string]: string | number | boolean | string[] | undefined;
+          }
+          const created = (response.data || {}) as PropertyData;
+          const existingRaw = localStorage.getItem("local_new_properties");
           const existing = existingRaw ? JSON.parse(existingRaw) : [];
           const withCreatedAt = {
             ...created,
             createdAt: created.createdAt || new Date().toISOString(),
           };
           const next = [withCreatedAt, ...existing].slice(0, 50);
-          localStorage.setItem('local_new_properties', JSON.stringify(next));
-        } catch { }
+          localStorage.setItem("local_new_properties", JSON.stringify(next));
+        } catch {
+          // Silently ignore localStorage errors - property was created successfully on backend
+        }
 
         setSuccess("Property created successfully!");
         setTimeout(() => {
-          navigate('/seller/dashboard');
+          navigate("/seller/dashboard");
         }, 800);
       } else {
         throw new Error(response.error || "Property creation failed");
       }
-    } catch (error: any) {
-      setError(error.message || "An error occurred while creating the property");
+    } catch (error: Error | unknown) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "An error occurred while creating the property";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
-  // Block unauthorized access
-  // if (!user || user.role !== 'seller') {
-  //   return (
-  //     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <h1 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h1>
-  //         <p className="text-gray-600">You need to be logged in as a seller to add properties.</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -149,8 +189,12 @@ const AddProperty: React.FC = () => {
         >
           {/* Header */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Add New Property</h1>
-            <p className="text-gray-600">List your property to reach potential buyers</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Add New Property
+            </h1>
+            <p className="text-gray-600">
+              List your property to reach potential buyers
+            </p>
           </div>
 
           {/* Error/Success Alerts */}
@@ -166,12 +210,16 @@ const AddProperty: React.FC = () => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white rounded-lg shadow-md p-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
               {/* Basic Info */}
               <div className="md:col-span-2">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Basic Information</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  Basic Information
+                </h2>
               </div>
 
               {/* Title */}
@@ -252,8 +300,10 @@ const AddProperty: React.FC = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select property type</option>
-                  {propertyTypes.map(type => (
-                    <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
+                  {propertyTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -277,7 +327,9 @@ const AddProperty: React.FC = () => {
 
               {/* Property Details */}
               <div className="md:col-span-2">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Property Details</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  Property Details
+                </h2>
               </div>
 
               {/* Bedrooms */}
@@ -333,7 +385,9 @@ const AddProperty: React.FC = () => {
 
               {/* Amenities */}
               <div className="md:col-span-2">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Amenities</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  Amenities
+                </h2>
 
                 {/* Custom Amenity */}
                 <div className="mb-4">
@@ -356,21 +410,23 @@ const AddProperty: React.FC = () => {
 
                   {/* Predefined Amenities */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {availableAmenities.map(amenity => (
+                    {availableAmenities.map((amenity) => (
                       <label key={amenity} className="flex items-center">
                         <input
                           type="checkbox"
                           checked={form.amenities.includes(amenity)}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setForm(prev => ({
+                              setForm((prev) => ({
                                 ...prev,
-                                amenities: [...prev.amenities, amenity]
+                                amenities: [...prev.amenities, amenity],
                               }));
                             } else {
-                              setForm(prev => ({
+                              setForm((prev) => ({
                                 ...prev,
-                                amenities: prev.amenities.filter(a => a !== amenity)
+                                amenities: prev.amenities.filter(
+                                  (a) => a !== amenity
+                                ),
                               }));
                             }
                           }}
@@ -385,7 +441,9 @@ const AddProperty: React.FC = () => {
                 {/* Selected Amenities */}
                 {form.amenities.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-medium text-gray-800 mb-2">Selected Amenities</h3>
+                    <h3 className="text-lg font-medium text-gray-800 mb-2">
+                      Selected Amenities
+                    </h3>
                     <div className="flex flex-wrap gap-2">
                       {form.amenities.map((amenity, index) => (
                         <span
@@ -409,7 +467,9 @@ const AddProperty: React.FC = () => {
 
               {/* Image URL */}
               <div className="md:col-span-2">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Property Image</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  Property Image
+                </h2>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Image URL *
                 </label>
@@ -417,7 +477,7 @@ const AddProperty: React.FC = () => {
                   type="url"
                   name="imageUrl"
                   value={imageUrl}
-                  onChange={e => setImageUrl(e.target.value)}
+                  onChange={(e) => setImageUrl(e.target.value)}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter image URL (e.g. https://...)"
@@ -430,13 +490,15 @@ const AddProperty: React.FC = () => {
                       className="w-full h-40 object-cover rounded-lg border"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = 'https://via.placeholder.com/400x300/cccccc/666666?text=Invalid+Image+URL';
+                        target.src =
+                          "https://via.placeholder.com/400x300/cccccc/666666?text=Invalid+Image+URL";
                       }}
                     />
                   </div>
                 )}
                 <p className="mt-2 text-sm text-gray-500">
-                  💡 Tip: Use a direct image URL from services like Imgur, Google Drive (public), or any image hosting service
+                  💡 Tip: Use a direct image URL from services like Imgur,
+                  Google Drive (public), or any image hosting service
                 </p>
               </div>
             </div>
@@ -445,7 +507,7 @@ const AddProperty: React.FC = () => {
             <div className="mt-8 flex justify-end space-x-4">
               <button
                 type="button"
-                onClick={() => navigate('/seller/dashboard')}
+                onClick={() => navigate("/seller/dashboard")}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
               >
                 Cancel
@@ -453,10 +515,11 @@ const AddProperty: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`px-6 py-3 rounded-lg font-medium ${loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
-                  }`}
+                className={`px-6 py-3 rounded-lg font-medium ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                }`}
               >
                 {loading ? "Adding Property..." : "Add Property"}
               </button>
