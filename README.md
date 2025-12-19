@@ -46,7 +46,24 @@ Frontend runs on `http://localhost:5173` and backend on `http://localhost:5000`.
 
 * Images are stored in `uploads/` and served via `/uploads/<filename>`
 * API base URL is configured in `frontend/src/services/api.ts`
-* Ensure CORS allows the frontend origin
+* Ensure CORS allows the frontend origin. Set environment variables on the backend:
+
+```
+# backend .env
+MONGO_URI=<your-mongodb-connection-string>
+JWT_SECRET=<secure-random-string>
+FRONTEND_URL=https://real-estate-frontend-psi.vercel.app
+UPLOAD_DIR=uploads
+```
+
+On Vercel (frontend), set:
+
+```
+# frontend Vercel env
+VITE_API_BASE_URL=https://real-estate-backend-three-rust.vercel.app
+```
+
+This ensures preflight requests return proper CORS headers and the frontend points to the correct API.
 
 ## License
 

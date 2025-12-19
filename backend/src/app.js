@@ -47,8 +47,30 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Explicitly handle preflight for all routes
-app.options("*", cors(corsOptions));
+// Explicitly handle preflight without wildcard pattern (Express 5 safe)
+const vercelRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*vercel\.app$/i;
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  if (vercelRegex.test(origin)) return true;
+  return false;
+}
+
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    const origin = req.headers.origin || "";
+    if (isAllowedOrigin(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Vary", "Origin");
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      return res.status(204).end();
+    }
+    return res.status(403).json({ message: "Not allowed by CORS" });
+  }
+  next();
+});
 app.use(express.json());
 app.use(morgan("dev"));
 
