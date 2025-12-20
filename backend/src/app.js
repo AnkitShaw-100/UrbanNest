@@ -10,7 +10,7 @@ import favoriteRoutes from "./routes/favorite.routes.js";
 import propertyRoutes from "./routes/propertyRoutes.js";
 
 dotenv.config();
-connectDB();
+await connectDB();
 
 
 import path from "path";
