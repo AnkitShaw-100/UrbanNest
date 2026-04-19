@@ -24,9 +24,7 @@ const app = express();
 // Configure CORS (allow local dev, env-configured, and Vercel frontends)
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:3000",
-  process.env.FRONTEND_URL,
-  "https://real-estate-frontend-psi.vercel.app",
+  "https://urbannest-home.vercel.app",
 ].filter(Boolean);
 
 const corsOptions = {
